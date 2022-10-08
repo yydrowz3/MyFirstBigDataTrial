@@ -1,0 +1,117 @@
+<template>
+  <el-menu
+    default-active="/"
+    class="el-menu-vertical-demo"
+    :collapse="isCollapse"
+    @open="handleOpen"
+    @close="handleClose"
+    background-color="#545c64"
+    text-color="#fff"
+    active-text-color="DeepSkyBlue"
+  >
+    <el-menu-item
+      @click="clickMenu(item)"
+      v-for="item in menu"
+      :index="item.path"
+      :key="item.path"
+    >
+      <el-icon v-if="item.name == 'display'">
+        <Platform />
+      </el-icon>
+      <el-icon v-else-if="item.name == 'analysis'">
+        <DataAnalysis />
+      </el-icon>
+      <el-icon v-else-if="item.name == 'user'">
+        <Avatar />
+      </el-icon>
+      <span slot="title">{{ item.lable }}</span>
+    </el-menu-item>
+  </el-menu>
+</template>
+
+<script lang="ts" >
+import { ref } from 'vue'
+import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
+import {ElMessage} from 'element-plus'
+
+export default defineComponent({
+
+
+  setup() {
+    const data=JSON.parse(localStorage.getItem("user"))
+    const router = useRouter()
+    const isCollapse = ref(false)
+    const handleOpen = (key: string, keyPath: string[]) => {
+      console.log(key, keyPath)
+    }
+    const handleClose = (key: string, keyPath: string[]) => {
+      console.log(key, keyPath)
+    }
+
+    const clickMenu = (item) => {
+      if(item.path!='user'){
+      router.push({
+        name: item.path
+      })}
+      else{
+        if(JSON.parse(localStorage.getItem("user"))!=null)
+        {
+          router.push({name:item.path})
+        }
+        else
+        {
+          ElMessage.warning({
+                  message: "用户未登录,跳转登录页面！",
+                  type: "warning",
+                });
+          router.push('/login')}
+        }
+      }
+      
+
+    const menu = [
+      {
+        path: 'display',
+        name: 'display',
+        lable: '展示大屏',
+        url: 'Home/display'
+      },
+      {
+        path: 'analysis',
+        name: 'analysis',
+        lable: '分析查询',
+        url: 'Home/analysis'
+      },
+      {
+        path: 'user',
+        name: 'user',
+        lable: '个人中心',
+        url: 'Home/person'
+      },
+    ]
+
+    return {
+      isCollapse,
+      handleOpen,
+      handleClose,
+      clickMenu,
+      menu,
+    }
+
+  }
+})
+
+</script>
+
+<style lang="less" scoped>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 15vw;
+  min-height: 400px;
+}
+
+.el-menu {
+  height: 91vh;
+  border: none;
+}
+</style>

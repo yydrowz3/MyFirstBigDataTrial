@@ -1,0 +1,68 @@
+package com.gcsj.controller;
+
+
+import com.alibaba.fastjson.JSONObject;
+import com.gcsj.pojo.User;
+import com.gcsj.service.SendMailService;
+import com.gcsj.service.UserService;
+import org.apache.ibatis.jdbc.Null;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Random;
+
+@ResponseBody
+@Controller
+public class MailController {
+
+    @Autowired
+    SendMailService sendMailService;
+
+    @Autowired
+    UserService userService;
+    @GetMapping("/testmail")
+    public void sendmail(String to,String subject,String text)
+    {
+        sendMailService.sendTextMailMessage(to,subject,text);
+
+    }
+
+    @GetMapping("/forgetPwd")
+    public JSONObject forgetpwd(String nickName,String email)
+    {
+        JSONObject jsonObject = new JSONObject();
+        System.out.println(email);
+        if(userService.checkByEmail(email) == 0)
+        {
+            jsonObject.put("code",202);
+            jsonObject.put("msg","查无此邮箱");
+            return jsonObject;
+        }
+        User user = userService.selectUserByMail(email);
+        if(nickName.equals(user.getNickName())==false)
+        {
+            jsonObject.put("code",201);
+            jsonObject.put("msg","账号和邮箱不匹配");
+            return jsonObject;
+        }
+        System.out.println(user);
+        String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random=new Random();
+        StringBuffer newpwd=new StringBuffer();
+        for(int i=0;i<6;i++) {
+            int number = random.nextInt(62);
+            newpwd.append(str.charAt(number));
+        }
+        user.setPassword(newpwd.toString());
+        userService.updateUserById(user);
+        String subject = "忘记密码";
+        String text = "您好，您的密码已重置为 "+newpwd+" ,请登陆后及时修改密码。";
+        sendMailService.sendTextMailMessage(email,subject,text);
+        jsonObject.put("code",200);
+        jsonObject.put("msg","请及时查看您的邮箱");
+        return jsonObject;
+    }
+
+}

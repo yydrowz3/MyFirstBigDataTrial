@@ -1,0 +1,120 @@
+<template>
+  <header>
+    <div class="headimg">
+      <img src="../../assets/images/logo.png" />
+    </div>
+
+    <div class="l-content">高校招生计划分析可视化系统</div>
+
+    <div>
+      <!-- 登入前 -->
+      <div :style="play1">
+        <el-button text type="primary" @click="goLogin">登入</el-button>
+        <el-button text type="primary" @click="goRegister">注册</el-button>
+        <!-- <el-link @click="goLogin" type="primary">登入</el-link> -->
+        <!-- <el-link @click="goRegister" type="primary">注册</el-link> -->
+      </div>
+      <!-- 登入后 -->
+      <div :style="play2">
+        <div class="r-content">
+          <el-dropdown trigger="click" size="mini">
+            <span>
+              <img class="user" :src="src" />
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="loyout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script lang="ts">
+import router from '@/router';
+import { defineComponent, ref } from 'vue';
+import { baseUrl } from '../../types/baseUrl';
+
+export default defineComponent({
+  setup() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    var flag: boolean;
+    var src = ref('');
+
+    var play1 = ref(''); //登入前
+    var play2 = ref(''); //登入后
+
+    if (user != null) {
+      src = ref(baseUrl + '/' + user.avatar);
+      play1 = ref('display:none');
+      play2 = ref('display:block');
+    } else {
+      play1 = ref('display:block');
+      play2 = ref('display:none');
+    }
+
+    const goLogin = () => {
+      router.push('/login');
+    };
+    const goRegister = () => {
+      router.push('/register');
+    };
+
+    const loyout = () => {
+      localStorage.removeItem('user');
+      // window.location.reload();
+      router.replace('/');
+      location.reload();
+    };
+    return {
+      src,
+      loyout,
+      play1,
+      play2,
+      goLogin,
+      goRegister,
+    };
+  },
+});
+</script>
+
+<style lang="scss" scoped>
+// .el-link {
+//   padding: 0px 10px 0px 10px;
+// }
+.headimg {
+  img {
+    margin-top: 20px;
+    height: 35px;
+    width: 35px;
+  }
+}
+
+header {
+  display: flex;
+  height: 8vh;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+.l-content {
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.r-content {
+  .user {
+    box-shadow: 0px 0px 2px 2px rgb(255, 255, 255);
+    margin-right: 30px;
+    margin-top: 10px;
+    height: 35px;
+    width: 35px;
+    border-radius: 50%;
+  }
+}
+</style>

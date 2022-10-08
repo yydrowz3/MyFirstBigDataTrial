@@ -1,0 +1,81 @@
+import type { FormInstance } from 'element-plus';
+import { ref } from 'vue';
+
+export interface SchoolInfoListInt {
+  id: number;
+  schoolCode: string;
+  schoolName: string;
+  province: string;
+  majorCode: string;
+  profess: string;
+  subject: string;
+  batch: number;
+  plan: number;
+}
+
+interface selectDataInt {
+  schoolName: string;
+  profess: string;
+  // page: number;
+  // count: number;
+}
+
+interface queryDataInt {
+  schoolName: string;
+  profess: string;
+  // page: number;
+  // count: number;
+}
+
+export interface activeDataInt {
+  id: number;
+  schoolCode: string;
+  schoolName: string;
+  province: string;
+  majorCode: string;
+  profess: string;
+  subject: string;
+  batch: number;
+  plan: number;
+}
+
+export class InitData {
+  selectData: selectDataInt = {
+    schoolName: '',
+    profess: '',
+  };
+  queryData: queryDataInt = {
+    schoolName: null,
+    profess: null,
+  };
+  activeData: activeDataInt = {
+    id: 0,
+    schoolCode: '',
+    schoolName: '',
+    province: '',
+    majorCode: '',
+    profess: '',
+    subject: '',
+    batch: 0,
+    plan: 0,
+  };
+  // userlist: [UserListInt][] = [];
+  // rolelist: RoleListInt[] = [];
+  // listData: [UserListInt][] = [];
+  // active: ActiveInt = {
+  //   id: 0,
+  //   nickname: '',
+  //   userName: '',
+  //   role: [],
+  // };
+  infoTotalList: SchoolInfoListInt[] = [];
+  // infoPageList: [SchoolInfoListInt][] = [];  //存储分好页的数据的二维数组（已弃用）
+  enrollmentInfo: SchoolInfoListInt;
+  isShow = false;
+  status = 0; // 0为add 1为edit
+  currentPage = 1; //当前页
+  pageSize = 10;
+  totalNum = 0;
+  formRef = ref<FormInstance>();
+  isLoading = false;
+}

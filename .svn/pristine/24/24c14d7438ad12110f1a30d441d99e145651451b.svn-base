@@ -1,0 +1,17 @@
+package com.gcsj.mapper;
+
+
+
+import com.gcsj.pojo.RegionProvince;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Mapper
+@Repository
+
+public interface RegionProvinceMapper {
+    List<RegionProvince> selectProByRegionName(String regionName);
+    List<RegionProvince> selectRegByProvince(String province);
+}

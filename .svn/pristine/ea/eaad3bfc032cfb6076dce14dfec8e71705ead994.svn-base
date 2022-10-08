@@ -1,0 +1,13 @@
+import $http from './index';
+
+export const getUsers = () =>
+  $http({
+    url: '/admin/api/getUsers',
+    method: 'get',
+  });
+
+export const getSchoolInfo = (data) => $http({
+  url: '/selectEnrollmentInfo',
+  method: 'post',
+  data,
+});

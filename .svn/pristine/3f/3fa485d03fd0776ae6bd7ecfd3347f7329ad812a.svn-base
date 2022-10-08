@@ -1,0 +1,20 @@
+import type { FormInstance } from 'element-plus';
+import { ref } from 'vue';
+export interface changeFormInt {
+    id:number;
+    realName: string;
+    sex: string;
+    teleNumber: string;
+    email: string;
+}
+
+export class InitData {
+    changeForm: changeFormInt = {
+        id:-1,
+        realName: '',
+        sex: '',
+        teleNumber: '',
+        email: ''
+    }
+    changeFormRef = ref<FormInstance>()
+}

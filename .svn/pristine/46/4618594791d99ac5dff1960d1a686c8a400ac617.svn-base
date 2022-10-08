@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.gcsj.mapper.RegionProvinceMapper">
+
+    <resultMap id="RegionProvinceRM" type="com.gcsj.pojo.RegionProvince">
+        <id property="id" column="id"></id>
+        <result property="regionName" column="r_name"></result>
+        <result property="province" column="province"></result>
+    </resultMap>
+    <select id="selectProByRegionName" parameterType="String" resultMap="RegionProvinceRM">
+        select *
+        from region_province
+        where r_name = #{regionName}
+    </select>
+    <select id="selectRegByProvince" parameterType="String" resultMap="RegionProvinceRM">
+        select r_name
+        from region_province
+        where province = #{province}
+    </select>
+
+
+</mapper>

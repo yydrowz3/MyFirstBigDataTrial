@@ -1,0 +1,82 @@
+<template>
+  <div class="main">
+    <div class="head">
+      <el-form :inline="true" :model="selectData" class="demo-form-inline">
+        <el-form-item label="学校">
+          <el-input
+            v-model="selectData.schoolName"
+            placeholder="请输入关键字"
+          />
+        </el-form-item>
+        <el-form-item label="省份">
+          <el-input v-model="selectData.province" placeholder="请输入关键字" />
+        </el-form-item>
+        <el-form-item label="专业">
+          <el-input v-model="selectData.profess" placeholder="请输入关键字" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="bottom">
+      <el-table class="table" border:data="list" style="width: 100%">
+        <el-table-column prop="" label="ID" width="180" />
+        <el-table-column prop="name" label="学校" width="300" />
+        <el-table-column prop="address" label="省份" width="180"/>
+        <el-table-column prop="address" label="专业类别" width="180"/>
+        <el-table-column prop="address" label="专业" width="400"/>
+      </el-table>
+       <div class="page">
+       <el-pagination @click="usepage(page)" background layout="prev, pager, next" :total="1000" />
+       </div>
+    </div>
+  </div>
+</template>
+
+<script lang = 'ts'>
+import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { InitData } from "../../types/analysis";
+import { FormInstance, ElMessage } from "element-plus";
+import { getschools } from "../../http/api";
+import { useRouter } from "vue-router";
+
+export default defineComponent({
+  setup() {
+    const data = reactive(new InitData());
+    onMounted(()=>{
+        getschools(data.selectData).then(res=>{
+            console.log(res);
+        })
+    })
+    return {
+      ...toRefs(data),
+    };
+  },
+});
+</script>
+
+<style lang='scss' scoped>
+.table{
+  height: 60vh;
+  text-align: center;
+}
+.head {
+  height: 25vh;
+  margin-top: 3vh;
+  margin-left: 3vw;
+  height: 10vh;
+  .el-form {
+    margin-top: 9vh;
+    margin-left: 10vw;
+  }
+}
+.bottom{
+  height: 66vh;
+}
+.page{
+  margin-top:2vh;
+  float:right;
+  height: 4vh;
+}
+</style>

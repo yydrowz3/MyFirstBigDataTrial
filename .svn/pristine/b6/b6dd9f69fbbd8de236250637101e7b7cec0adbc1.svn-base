@@ -1,0 +1,52 @@
+package com.gcsj.mapper;
+
+import com.gcsj.pojo.EnrInfoStatis;
+import com.gcsj.pojo.EnrollmentInfo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
+
+@Mapper
+public interface EnrInfoMapper {
+
+    @Select ("select * from enrollment_info")
+    public List<EnrollmentInfo> getEnrollmentPlansByPage();
+
+    @Select({"<script>",
+            "select * from enrollment_info",
+            "<where>",
+            "<if test='schoolname != null'>school_name like #{schoolname}</if>",
+            "<if test='profess != null'>and profess like #{profess}</if>",
+            "<if test='province != null'>and province like #{province}</if>",
+            "</where>",
+            "</script>"
+
+    })
+    public List<EnrollmentInfo> getEnrollmentPlans(String school,String profess,String province);
+
+    /**
+     *  热门专业&冷门专业sql
+     "select profess,sum(plan) as plantotal,school  from enrollment_info ep
+     group by major_code  order by  plantotal DESC limit 10";
+     */
+
+
+
+    @Select({"<script>",
+            "select profess,sum(plan) as plan_total ,major_code from enrollment_info " ,
+            "<where>",
+            "<if test='school != null'>school = #{school}</if>",
+            "<if test='province != null'>and province = #{province}</if>",
+            "</where>",
+            "group by major_code order by plan_total ",
+            "<if test='desc != null'>desc</if>",
+            "<if test='desc == null'>asc</if>",
+            "limit #{topn}",
+            "</script>"
+    })
+    public List<EnrInfoStatis> getTopNEnrollmentPlans(String school, String province, String desc, int topn);
+
+}

@@ -1,0 +1,25 @@
+package com.gcsj.mapper;
+
+import com.gcsj.vo.EnrInfo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
+
+@Mapper
+public interface EnrInfoMapper {
+
+    List<Map<String, Object>> mulSelect(EnrInfo enrInfo);
+
+    List<Map<String, Object>> mulSelect1(EnrInfo enrInfo);
+
+    List<Map<String, Object>> mulSelect2(EnrInfo enrInfo);
+
+    Integer countMulSelect(EnrInfo enrInfo);
+
+    Integer countMulSelect1(EnrInfo enrInfo);
+
+    Integer countMulSelect2(EnrInfo enrInfo);
+
+}

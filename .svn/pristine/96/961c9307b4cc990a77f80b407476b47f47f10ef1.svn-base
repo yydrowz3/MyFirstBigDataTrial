@@ -1,0 +1,29 @@
+package com.gcsj.mapper;
+
+import com.gcsj.pojo.Major;
+import com.gcsj.pojo.EnrollmentInfo;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+
+@Mapper
+public interface EnrollmentInfoMapper {
+
+//    public List<EnrollmentInfo> getEnrollmentInfosByPage();
+//
+//    public List<EnrollmentInfo> getEnrollmentinfos(String schoolName, String profess, String province);
+//
+//    /**
+//     *  热门专业&冷门专业sql
+//     "select profess,sum(plan) as plantotal,school  from enrollment_plan ep
+//     group by major_code  order by  plantotal DESC limit 10";
+//     */
+//
+//    public List<EnrInfoResult> getTopNEnrollmentInfos(String schoolName, String province, String desc, int topn);
+
+
+    void upDataById(EnrollmentInfo enrollmentInfo);
+
+    EnrollmentInfo findById(EnrollmentInfo enrollmentInfo);
+}

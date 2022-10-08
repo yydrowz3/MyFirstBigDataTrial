@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gcsj.mapper.SchoolMapper">
+    <resultMap id="SchoolRM" type="com.gcsj.pojo.School">
+        <id property="id" column="id"></id>
+        <result property="schoolCode" column="school_code"></result>
+        <result property="schoolName" column="school_name"></result>
+    </resultMap>
+
+    <select id="selectSchoolByName" parameterType="String" resultMap="SchoolRM">
+        select *
+        from school
+        where school_name = #{schoolName}
+    </select>
+
+</mapper>

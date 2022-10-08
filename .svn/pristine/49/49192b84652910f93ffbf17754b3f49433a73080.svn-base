@@ -1,0 +1,22 @@
+package com.gcsj.pojo;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class SourceInfo {
+    @ApiModelProperty(value = "记录id")
+    private int id;
+    @ApiModelProperty(value = "招生人数")
+    private int plan;
+    @ApiModelProperty(value = "招生区域")
+    private String area;
+    @ApiModelProperty(value = "招生年份")
+    private Date enrollYear;
+}

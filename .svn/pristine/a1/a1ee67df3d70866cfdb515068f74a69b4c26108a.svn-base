@@ -1,0 +1,40 @@
+export interface SchoolInfoListInt {
+  id: number;
+  schoolCode: string;
+  schoolName: string;
+  province: string;
+  majorCode: string;
+  profess: string;
+  subject: string;
+  batch: number;
+  plan: number;
+}
+
+interface selectDataInt {
+  schoolName: string;
+  profess: string;
+  page: number;
+  count: number;
+}
+
+export class InitData {
+  selectData: selectDataInt = {
+    schoolName: '',
+    profess: '',
+    page: 1,
+    count: 0,
+  };
+  // userlist: [UserListInt][] = [];
+  // rolelist: RoleListInt[] = [];
+  // listData: [UserListInt][] = [];
+  // active: ActiveInt = {
+  //   id: 0,
+  //   nickname: '',
+  //   userName: '',
+  //   role: [],
+  // };
+  infoTotalList: SchoolInfoListInt[] = [];
+  infoPageList: [SchoolInfoListInt][] = [];
+  enrollmentInfo:SchoolInfoListInt;
+  isShow = false;
+}

@@ -1,0 +1,124 @@
+<template>
+  <div class="main" :key="once">
+    <div class="head">
+      <el-form :inline="true" :model="selectData" class="demo-form-inline">
+        <el-form-item prop="schoolName" label="学校">
+          <el-input
+            v-model="selectData.schoolName"
+            placeholder="请输入关键字"
+          />
+        </el-form-item>
+        <el-form-item prop="province" label="省份">
+          <el-input v-model="selectData.province" placeholder="请输入关键字" />
+        </el-form-item>
+        <el-form-item prop="profess" label="专业">
+          <el-input v-model="selectData.profess" placeholder="请输入关键字" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit(data)">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="bottom">
+      <el-table :key="once" :data="list" style="width: 100%">
+        <el-table-column prop="schoolName" label="学校" width="180" />
+        <el-table-column prop="province" label="省份" width="180" />
+        <el-table-column prop="subject" label="类别" width="180" />
+        <el-table-column prop="profess" label="专业" />
+      </el-table>
+      <div class="page">
+        <el-pagination
+          @click="usepage(pager)"
+          v-model="data"
+          background
+          layout="prev, , next"
+          :total="100"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang = 'ts'>
+import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { InitData } from "../../types/analysis";
+import { FormInstance, ElMessage } from "element-plus";
+import { getschools } from "../../http/api";
+import { useRouter } from "vue-router";
+
+
+export default defineComponent({
+  setup() {
+    let once=1
+    const tableData = reactive([
+      {
+        pitch: 1,
+        schoolName: "asdasd",
+        province: "asddas",
+        subject: "awdsdad",
+        profess: "asddsa",
+      },
+      {
+        pitch: 3,
+        schoolName: "asdasd",
+        province: "asds",
+        subject: "aw丰大厦的sdad",
+        profess: "asddsa",
+      },
+    ]);
+    once++;
+    const usepage=(pager)=>{
+      data.selectData.pageNum=pager;
+      getschools(data.selectData).then((res) => {
+        data.list=res.data.content
+         console.log(data.list);
+      });
+    }
+    console.log(tableData);
+    const data = reactive(new InitData());
+    let schools = reactive([]);
+    onMounted(() => {
+      getschools(data.selectData).then((res) => {
+         data.list=res.data.content
+         console.log(data.list);
+      });
+    });
+    const onSubmit = (item: FormInstance | undefined) => {
+      getschools(data.selectData).then((res) => {
+        data.list=res.data.content
+         console.log(data.list);
+      });
+    };
+    once++
+    return {
+      ...toRefs(data),
+      onSubmit,
+      usepage
+    };
+  },
+});
+</script>
+
+<style lang='scss' scoped>
+.table {
+  height: 60vh;
+}
+.head {
+  height: 25vh;
+  margin-top: 3vh;
+  margin-left: 3vw;
+  height: 10vh;
+  .el-form {
+    margin-top: 9vh;
+    margin-left: 10vw;
+  }
+}
+.bottom {
+  height: 66vh;
+}
+.page {
+  margin-top: 2vh;
+  float: right;
+  height: 4vh;
+}
+</style>

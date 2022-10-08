@@ -1,0 +1,143 @@
+<template>
+  <div class="change-box">
+    <el-form ref="changeFormRef" :model="changeForm" status-icon :rules="rules" label-width="120px" class="changeForm">
+      <h2 class="change-title">个人信息修改</h2>
+
+      <el-form-item size="large" class="name" label="姓名：" prop="realName">
+        <el-input v-model="changeForm.realName" autocomplete="off" />
+      </el-form-item>
+      <el-form-item size="large" class="sex" label="性别：" prop="sex">
+        <el-input v-model="changeForm.sex" autocomplete="off" />
+      </el-form-item>
+      <el-form-item size="large" class="tele" label="电话：" prop="teleNumber">
+        <el-input v-model="changeForm.teleNumber" autocomplete="off" />
+      </el-form-item>
+      <el-form-item size="large" class="email" label="Email：" prop="email">
+        <el-input v-model="changeForm.email" autocomplete="off" />
+      </el-form-item>
+
+      <el-form-item class="btn">
+        <el-button class="btn-1" type="primary" @click="submitForm(changeFormRef)">提交</el-button>
+        <el-button class="btn-2" type="primary" @click="submitForm1">返回</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script lang="ts">
+import view from '../../util/view'
+import { defineComponent, reactive, toRefs } from "vue";
+import { InitData } from "../../types/change";
+import { FormInstance, ElMessage } from "element-plus";
+import { change } from "../../http/api";
+import { useRouter } from "vue-router";
+
+export default defineComponent({
+  setup() {
+    const mixins= [view]
+    const router = useRouter();
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user == null) {
+      router.push("/")
+    }
+    const data = reactive(new InitData());
+    data.changeForm.id = user.id;
+    data.changeForm.realName = user.realName;
+    data.changeForm.sex = user.sex;
+    data.changeForm.teleNumber = user.teleNumber;
+    data.changeForm.email = user.email;
+    const rules = [
+
+    ]
+    const submitForm1 = () => {
+      router.push('user')
+    }
+    const submitForm = (changeFormRef: FormInstance | undefined) => {
+      changeFormRef.validate((valid: boolean) => {
+        if (valid) {
+          change(data.changeForm).then(
+            (res) => {
+              // console.log(res);
+              if (res.data.code == 200) {
+                // console.log(res.data);
+
+                localStorage.setItem('user', JSON.stringify(res.data.user))
+                ElMessage.success({
+                  message: '修改成功！',
+                  type: 'success'
+                });
+                router.push('/user')
+              } else {
+                ElMessage.warning({
+                  message: "信息修改失败",
+                  type: "warning",
+                });
+                return false;
+              }
+            }
+          ).catch(
+            (err) => {
+              // console.log(err);
+              ElMessage.error(err.message)
+            }
+
+          )
+        }
+      })
+    }
+    return {
+      ...toRefs(data),
+      submitForm,
+      submitForm1,
+      rules,
+      mixins
+    };
+  },
+});
+</script>
+
+<style  lang="scss" scoped>
+h2{
+  margin-right: 8vw;
+}
+.change-box {
+  div::-webkit-scrollbar {
+  width: 0;
+  }
+  overflow: auto;
+  top: 0;
+  left: 0;
+  z-index: -10;
+  zoom: 1;
+  box-sizing: border-box;
+  height: 91vh;
+  width: 85vw;
+  .el-form-item {
+    margin-left: 17vw;
+    width: 85vw;
+    margin-bottom: 10vh;
+  }
+
+  ::v-deep .el-input {
+    width: 30vw;
+  }
+  .change-title {
+    text-align: center;
+    margin-top: 4vh;
+    margin-bottom: 7vh;
+  }
+
+  .btn {
+    margin-top: 7vh;
+    margin-bottom: 7vh;
+    .btn-1 {
+      margin-left: 0.5vw;
+    }
+
+    .btn-2 {
+      margin-left: 21vw;
+      margin-right: 1vw;
+    }
+  }
+}
+</style>

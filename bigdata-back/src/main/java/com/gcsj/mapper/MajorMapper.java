@@ -1,0 +1,19 @@
+package com.gcsj.mapper;
+
+
+import com.gcsj.pojo.Major;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Mapper
+@Repository
+public interface MajorMapper {
+
+    List<Major> selectMajorByName(String profess);
+    List<Major> selectMajorByCode(String majorCode);
+
+
+
+}

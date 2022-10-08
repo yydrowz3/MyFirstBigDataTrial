@@ -1,0 +1,18 @@
+package com.gcsj.mapper;
+
+import com.gcsj.pojo.EnrollmentInfo;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Map;
+
+@Mapper
+public interface EnrInfoMapper {
+
+    List<EnrollmentInfo> listEnrInfo();
+
+    List<EnrollmentInfo> selectEnrInfoListByPage(EnrollmentInfo enrollmentInfo);
+
+    List<EnrollmentInfo> selectByMajorListByPage(String schoolName,String province,String desc);
+
+}

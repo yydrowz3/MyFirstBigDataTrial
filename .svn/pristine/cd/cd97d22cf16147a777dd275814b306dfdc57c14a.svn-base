@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gcsj.mapper.EnrInfoMapper">
+    <resultMap id="EnrInfoRM" type="com.gcsj.vo.EnrInfo">
+        <id property="id" column="id"></id>
+        <result property="pageNum" column="pageNum"></result>
+        <result property="pageSize" column="pageSize"></result>
+        <result property="desc" column="desc"></result>
+        <result property="schoolCode" column="school_code"></result>
+        <result property="schoolName" column="school_name"></result>
+        <result property="province" column="province"></result>
+        <result property="majorCode" column="major_code"></result>
+        <result property="profess" column="profess"></result>
+        <result property="subject" column="subject"></result>
+        <result property="batch" column="batch"></result>
+        <result property="plan" column="plan"></result>
+    </resultMap>
+    <select id="mulSelect" resultMap="EnrInfoRM">
+        select *
+        from enrollment_info
+        order by id
+        limit #{pageNum},#{pageSize};
+    </select>
+
+    <select id="mulSelect1" resultMap="EnrInfoRM">
+        select *
+        from enrollment_info
+        <where>
+            <if test='schoolName != null'>
+                enrollment_info.school_Name like #{schoolName}</if>
+            <if test='profess != null'>
+                and enrollment_info.profess like #{profess}</if>
+            <if test='province != null'>
+                and enrollment_info.province like #{province}</if>
+        </where>
+        order by id
+        limit #{pageNum},#{pageSize};
+    </select>
+
+    <select id="mulSelect2" resultMap="EnrInfoRM">
+        select profess,sum(plan)
+        from enrollment_info
+        <where>
+            <if test='schoolName != null'>
+                school_Name = #{schoolName}</if>
+            <if test='province != null'>
+                and province = #{province}</if>
+        </where>
+        group by profess order by sum(plan)
+        <if test='desc != null'>desc</if>
+        <if test='desc == null'>asc</if>
+        limit #{pageNum},#{pageSize};
+    </select>
+
+    <select id="countMulSelect" resultMap="EnrInfoRM">
+        select distinct count(*)
+        from enrollment_info
+    </select>
+
+    <select id="countMulSelect1" resultMap="EnrInfoRM">
+        select distinct count(*)
+        from enrollment_info
+        where
+        <if test='schoolName != null'>
+            school_Name = #{schoolName}</if>
+        <if test='profess != null'>
+            and enrollment_info.profess = #{profess}</if>
+        <if test='province != null'>
+            and province = #{province}</if>
+    </select>
+
+    <select id="countMulSelect2" resultMap="EnrInfoRM">
+        select distinct count(*)
+        from enrollment_info
+        where
+        <if test='schoolName != null'>
+            school_Name = #{schoolName}</if>
+        <if test='province != null'>
+            and province = #{province}</if>
+    </select>
+
+</mapper>

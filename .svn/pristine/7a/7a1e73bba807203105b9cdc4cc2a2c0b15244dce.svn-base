@@ -1,0 +1,9 @@
+package com.gcsj.service;
+
+import com.gcsj.pojo.ProEnrInfo;
+import org.springframework.stereotype.Service;
+
+@Service
+public interface ProEnrInfoService {
+    ProEnrInfo selectByProvince(String province);
+}

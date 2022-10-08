@@ -1,0 +1,11 @@
+package com.gcsj.service;
+
+import com.gcsj.pojo.utils.PageRequest;
+import com.gcsj.pojo.utils.PageResult;
+import org.springframework.stereotype.Service;
+
+@Service
+public interface AdminService {
+
+    public PageResult listUser(PageRequest pageRequest);
+}

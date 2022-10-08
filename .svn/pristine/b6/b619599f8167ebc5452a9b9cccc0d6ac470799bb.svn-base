@@ -1,0 +1,139 @@
+<template>
+  <div class="main">
+    <div class="head">
+      <el-form :inline="true" :model="selectData" class="demo-form-inline">
+        <el-form-item prop="schoolName" label="学校">
+          <el-input v-model="selectData.enrollmentInfo.schoolName" placeholder="请输入关键字" />
+        </el-form-item>
+        <el-form-item prop="province" label="省份">
+          <el-input v-model="selectData.enrollmentInfo.province" placeholder="请输入关键字" />
+        </el-form-item>
+        <el-form-item prop="profess" label="专业">
+          <el-input v-model="selectData.enrollmentInfo.profess" placeholder="请输入关键字" />
+        </el-form-item>
+        <el-form-item class="lable">
+          专业类别
+          <el-radio-group v-model="selectData.enrollmentInfo.subject" style="margin-left:1vw">
+            <el-radio :label="'文史'" size="mini" border>文史</el-radio>
+            <el-radio :label="'理工'" size="mini" border>理工</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit(selectData)">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="bottom">
+      <el-table @cell-click="handle" :data="list" style="width: 100%">
+        <el-table-column prop="schoolCode" label="学校代码" />
+        <el-table-column prop="schoolName" label="学校" />
+        <el-table-column prop="province" label="省份" />
+        <el-table-column prop="subject" label="类别" />
+        <el-table-column prop="majorCode" label="专业代码" />
+        <el-table-column class="major" prop="profess" label="专业" width="200" :show-overflow-tooltip="true" />
+        <el-table-column prop="plan" label="招生人数" />
+        <el-button type="primary">查看详情</el-button>
+      </el-table>
+      <div class="page">
+        <el-pagination v-model="selectData" background layout="prev, pager, next,total,jumper" :total="page"
+          @current-change="handleCurrentChange" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang = 'ts'>
+import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { InitData } from "../../types/analysis";
+import { FormInstance, ElMessage } from "element-plus";
+import { getschools } from "../../http/api";
+import { useRouter } from "vue-router";
+
+export default defineComponent({
+  setup() {
+    let once = 1;
+    once++;
+    const router = useRouter();
+    const data = reactive(new InitData());
+    onMounted(() => {
+      getschools(data.selectData).then((res) => {
+        data.list = res.data.content;
+        data.page = res.data.totalSize;
+        console.log(data.list);
+      });
+    });
+    const onSubmit = (item: FormInstance | undefined) => {
+      getschools(data.selectData).then((res) => {
+        data.list = res.data.content;
+        data.page = res.data.totalSize;
+        console.log(data.list);
+        console.log(res.data.content);
+        console.log(data.selectData);
+      });
+    };
+    const handle = (row, column, cell, event) => {
+      router.push("/schoolinfo");
+      localStorage.setItem("schoolName", JSON.stringify(row.schoolName));
+    };
+    const handleCurrentChange = (newPage) => {
+      console.log(newPage);
+      data.selectData.pageNum = newPage;
+      getschools(data.selectData).then((res) => {
+        data.list = res.data.content;
+        data.page = res.data.totalSize;
+        console.log(res.data.content);
+      });
+    };
+    once++;
+    return {
+      ...toRefs(data),
+      onSubmit,
+      handleCurrentChange,
+      handle,
+    };
+  },
+});
+</script>
+
+<style lang='scss' scoped>
+.table {
+  height: 60vh;
+}
+
+.head {
+  height: 25vh;
+  margin-top: 3vh;
+  margin-left: 1vw;
+  height: 10vh;
+
+  .el-form {
+    margin-top: 9vh;
+    margin-left: 1vw;
+  }
+}
+
+.el-form-item {
+  width: 10vw;
+
+}
+
+.lable {
+  width: 300px;
+}
+
+.bottom {
+  height: 66vh;
+
+  .major {
+    max-width: 3vw;
+    height: 3vh;
+    overflow: hidden;
+  }
+}
+
+.page {
+  margin-top: 3vh;
+  float: right;
+  height: 4vh;
+}
+</style>

@@ -1,0 +1,51 @@
+package com.gcsj.service.impl;
+
+import com.gcsj.mapper.UserMapper;
+import com.gcsj.pojo.User;
+import com.gcsj.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    public int addUser(User user) {
+        //TODO  l
+        return userMapper.addUser(user);
+    }
+
+    @Override
+    public Object login(User user) {
+        List<User> users = userMapper.selectUserList(user);
+        if(users.size() >= 2){
+            return "该账号重复，请输入正确账号！";
+        }else if(users.size() == 0){
+            return "无此账号！";
+        } else{
+            User loginUser = users.get(0);
+            if (loginUser.getPassword().equals(user.getPassword())) {
+                return loginUser;
+            }else{
+                return "密码错误！";
+            }
+        }
+    }
+
+    @Override
+    public List<User> getUserList(User user) {
+
+        return userMapper.selectUserList(user);
+    }
+
+    @Override
+    public User getUserByName(String nickname) {
+
+        return userMapper.selectUserByName(nickname);
+    }
+}

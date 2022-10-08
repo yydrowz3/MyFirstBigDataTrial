@@ -1,0 +1,34 @@
+import $http from './index';
+
+export const getUsers = () =>
+  $http({
+    url: '/admin/api/getUsers',
+    method: 'get',
+  });
+
+<<<<<<< .mineexport const getSchoolInfo = (data) =>
+  $http({
+=======export const getSchoolInfo = (data) => $http({
+  url: '/selectEnrollmentInfo',
+>>>>>>> .theirsexport const getSchoolInfo = (data) => $http({
+  url: '/selectEnrollmentInfo',
+  method: 'post',
+  data,
+});
+<<<<<<< .mine    method: 'get',
+    data,
+  });
+
+=======  data,
+});
+>>>>>>> .theirsexport const deleteOneSchoolInfo = (data) =>
+  $http({
+    url: '/admin/api/deleteOneSchoolInfo',
+    method: 'post',
+    data,
+  });<<<<<<< .mine  $http({
+    url: '/admin/api/deleteOneSchoolInfo',
+    method: 'post',
+    data,
+  });
+=======>>>>>>> .theirs

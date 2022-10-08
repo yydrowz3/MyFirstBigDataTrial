@@ -1,0 +1,34 @@
+package com.gcsj.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.gcsj.service.EnrInfoService;
+import com.gcsj.pojo.EnrollmentInfo;
+import com.gcsj.service.EnrollmentInfoService;
+import com.gcsj.vo.PageRequest;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@ResponseBody
+@Controller
+public class  SelectController {
+
+    @Autowired
+    EnrollmentInfoService enrollmentInfoService;
+
+    @Autowired
+    EnrInfoService enrInfoService;
+
+    @GetMapping("/myquery")
+    public Object toEnrollMentInfoQuery(@RequestParam("pageNum") int pageNum,
+                                        @RequestParam("pageSize") int pageSize,
+                                        EnrollmentInfo enrollmentInfo) {
+        PageRequest pageQuery = new PageRequest();
+        pageQuery.setPageNum(pageNum);
+        pageQuery.setPageSize(pageSize);
+        return enrInfoService.selectEnrInfoListBy(pageQuery,enrollmentInfo);
+
+    }
+}
+

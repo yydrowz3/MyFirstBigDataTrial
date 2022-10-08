@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gcsj.mapper.AdminMapper">
+
+    <resultMap id="UserRM" type="com.gcsj.pojo.User">
+        <id property="id" column="id"></id>
+        <result property="nickName" column="nickname"></result>
+        <result property="realName" column="real_name"></result>
+        <result property="email" column="email"></result>
+        <result property="teleNumber" column="tele_number"></result>
+        <result property="sex" column="sex"></result>
+        <result property="role" column="role"></result>
+        <result property="password" column="password"></result>
+        <result property="avatar" column="avatar"></result>
+        <result property="status" column="status"></result>
+    </resultMap>
+
+
+    <select id="listUser" resultType="com.gcsj.pojo.User">
+        select *
+        from bigData.user_info
+    </select>
+
+</mapper>

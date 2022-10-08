@@ -1,0 +1,30 @@
+package com.gcsj.mapper;
+
+import com.gcsj.pojo.User;
+
+import com.gcsj.vo.PageRequest;
+import com.gcsj.vo.PageResult;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+
+@Mapper
+@Repository
+public interface UserMapper {
+
+    int addUser(User user);
+
+    List<User> selectUserList(User user);
+
+    User selectUserByName(String  nickname);
+	 User selectUserById(Integer id);
+
+    int updateAvatar(User user);
+
+    List<User> listUser();//查询所有用户并分页显示
+
+    List<User> selectUserListByPage(User user);//根据条件名查询用户并分页展示
+}

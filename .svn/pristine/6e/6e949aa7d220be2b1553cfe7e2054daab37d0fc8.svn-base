@@ -1,0 +1,93 @@
+<template>
+  <el-menu
+    router
+    class="el-menu-vertical-demo"
+    :collapse="isCollapse"
+    @open="handleOpen"
+    @close="handleClose"
+    background-color="#545c64"
+    text-color="#fff"
+    active-text-color="#ffd04b"
+  >
+    <h3>
+      管理员后台<el-icon><Avatar /></el-icon>
+    </h3>
+
+    <el-menu-item
+      v-for="item in menu"
+      @click="clickOn(item)"
+      :index="item.path"
+      :key="item.path"
+    >
+      <el-icon v-if="item.name == 'Users'">
+        <User />
+      </el-icon>
+      <el-icon v-else-if="item.name == 'Settings'">
+        <setting />
+      </el-icon>
+      <template #title>{{ item.label }}</template>
+    </el-menu-item>
+
+    <!-- <el-menu-item index="1" @click="clickUser()">
+      <el-icon><User /></el-icon>
+      <template #title>用户管理</template>
+    </el-menu-item>
+
+    <el-menu-item index="2" disabled>
+      <el-icon><setting /></el-icon>
+      <template #title>系统维护</template>
+    </el-menu-item> -->
+  </el-menu>
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+const isCollapse = ref(false);
+const handleOpen = (key: string, keyPath: string[]) => {
+  console.log(key, keyPath);
+};
+const handleClose = (key: string, keyPath: string[]) => {
+  console.log(key, keyPath);
+};
+
+const clickOn = (item) => {
+  router.push({
+    name: item.name,
+  });
+};
+
+const menu = [
+  {
+    path: '/admin/users',
+    name: 'Users',
+    label: '用户管理',
+    url: '/admin/users',
+  },
+  {
+    path: '/admin/settings',
+    name: 'Settings',
+    label: '系统维护',
+    url: '/admin/settings',
+  },
+];
+</script>
+
+<style lang="less" scoped>
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
+
+.el-menu {
+  height: 100vh;
+  border: none;
+  h3 {
+    color: #fff;
+    text-align: center;
+    line-height: 48px;
+  }
+}
+</style>

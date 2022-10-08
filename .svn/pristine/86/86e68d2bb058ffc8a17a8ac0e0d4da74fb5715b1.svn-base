@@ -1,0 +1,342 @@
+<template>
+  <div>
+    <el-row>
+      <el-col :span="16">
+        <el-button type="primary" round :icon="Edit" @click="addUser">添加用户</el-button>
+      </el-col>
+
+      <el-col :span="8">
+        <el-form :inline="true" :model="selectData">
+          <el-form-item label="搜索用户">
+            <el-input v-model="selectData.nickName" placeholder="请输入用户名" />
+          </el-form-item>
+          <el-form-item>
+            <el-button :icon="Search" @click="searchUser" type="warning" circle />
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+  </div>
+  <div>
+    <el-table border :data="userTotalList" style="width: 100%" stripe>
+      <el-table-column fixed prop="nickName" label="用户名" />
+      <el-table-column prop="id" label="用户ID" />
+      <el-table-column prop="email" label="用户邮箱" />
+      <el-table-column prop="realName" label="姓名" />
+      <el-table-column prop="sex" label="性别" />
+      <el-table-column prop="teleNumber" label="手机号" />
+      <el-table-column prop="password" label="密码" show-password />
+      <el-table-column prop="role" label="角色">
+        <template #default="scope">
+          <el-tag v-if="scope.row.role === 0" type="info" round>普通用户</el-tag>
+          <el-tag v-if="scope.row.role === 1" type="warning" round>管理员</el-tag>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column prop="avatar" label="头像" /> -->
+      <el-table-column prop="status" label="用户状态">
+        <template #default="scope">
+          <el-tag v-if="scope.row.status === 0" type="success" effect="light">正常</el-tag>
+          <el-tag v-if="scope.row.status === -1" type="danger" effect="dark">
+
+            <el-dropdown trigger="hover" size="mini">
+              已注销
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="relive(scope.row)">重新启用该用户</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+
+            </el-dropdown>
+
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" width="160">
+        <template #default="scope">
+          <el-button :disabled="scope.row.status === -1" type="primary" @click="editUser(scope.row)">编辑</el-button>
+          <el-button :disabled="scope.row.status === -1" type="danger" @click="deleteUser(scope.row)">注销</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination @current-change="currentChange" :current-page="currentPage" layout="prev, pager, next"
+      :total="totalNum" background class="pagination" style="padding-top: 20px" />
+  </div>
+  <div>
+    <el-dialog v-model="isShow" :title="status === 0 ? '添加用户' : '编辑用户'" v-loading="isLoading">
+      <el-form :model="activeData" inline :rules="rules" ref="formRef">
+        <!-- <el-form-item label="ID" prop="id">
+          <el-input placeholder="请输入ID" v-model.number="activeData.id" autocomplete="off" disabled />
+        </el-form-item> -->
+        <el-form-item label="用户名" prop="nickName">
+          <el-input placeholder="请输入用户名" v-model="activeData.nickName" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input placeholder="请输入密码" v-model="activeData.password" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="姓名" prop="realName">
+          <el-input placeholder="请输入姓名" v-model="activeData.realName" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input placeholder="请输入邮箱" v-model="activeData.email" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="角色" prop="role">
+          <el-radio-group v-model="activeData.role">
+            <el-radio :label="0" size="large" border>普通用户</el-radio>
+            <el-radio :label="1" size="large" border>管理员</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="性别" prop="sex">
+          <el-radio-group v-model="activeData.sex">
+            <el-radio :label="'男'" size="large" border>男</el-radio>
+            <el-radio :label="'女'" size="large" border>女</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="电话" prop="teleNumber">
+          <el-input placeholder="请输入电话" v-model="activeData.teleNumber" autocomplete="off" />
+        </el-form-item>
+        <!-- <el-form-item label="头像" prop="avatar">
+          <el-input
+            placeholder="请上传头像"
+            v-model="activeData.avatar"
+            autocomplete="off"
+          />
+        </el-form-item> -->
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="isShow = false">取消</el-button>
+          <el-button type="primary" @click="dialogConfirm(formRef)">确认</el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, onBeforeMount, onBeforeUpdate, onMounted, reactive, toRefs } from 'vue';
+import { InitData, UserInfoListInt } from '@/types/admin/userInfo';
+import { Search, Edit } from '@element-plus/icons-vue';
+import {
+  getUsers,
+  deleteOneUser,
+  editOneUser,
+  addOneUser,
+  reliveOneUser,
+} from '@/http/adminApi';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import type { FormInstance } from 'element-plus';
+import router from '@/router';
+
+export default defineComponent({
+  setup() {
+    const data = reactive(new InitData());
+
+    onBeforeMount(() => {
+      const user = JSON.parse(localStorage.getItem('user'))
+      console.log(user);
+
+      if (user == null) {
+        ElMessage.success('请先登录');
+        router.push('/login')
+      } else if (user.role == 0) {
+        ElMessage.success('你只是普通用户');
+        router.push('/display')
+      }
+    })
+
+
+
+    const updateList = () => {
+      // 获取数据
+      data.userTotalList = [];
+      getUsers({
+        pageNum: data.currentPage,
+        pageSize: data.pageSize,
+        user: {
+          nickName: data.selectData.nickName,
+        }
+      }).then((res) => {
+        data.userTotalList = res.data.content;
+        data.totalNum = res.data.totalSize;
+
+      }).catch((err) => {
+        // console.log(err);
+        // console.log(11);
+        ElMessage.error('数据加载失败');
+      });
+    };
+
+    onMounted(() => {
+      // 页面加载时获取数据
+
+      updateList();
+    });
+
+    const addUser = () => {
+      // 增加用户
+      Object.keys(data.activeData).forEach((key) => {
+        data.activeData[key] = null;
+      }); //置空
+      data.isShow = true;
+      data.status = 0;
+      // data.activeData.id = data.totalNum + 1;
+    };
+
+    const searchUser = () => {
+      // 点击搜索按钮
+      console.log('I am searchUser');
+      data.queryData.nickName = data.selectData.nickName;
+      data.currentPage = 1;
+      updateList();
+    };
+
+    const currentChange = (page: number) => {
+      // 分页切换页面
+      data.currentPage = page;
+      data.selectData.nickName = data.queryData.nickName;
+
+      updateList();
+    };
+
+    const editUser = (row: UserInfoListInt) => {
+      // 编辑用户
+      data.status = 1;
+      data.activeData = JSON.parse(JSON.stringify(row));
+      data.activeDataPointer = row;
+      data.isShow = true;
+    };
+    const deleteUser = (row: UserInfoListInt) => {
+      // 删除用户
+      ElMessageBox.confirm(
+        '这将会注销该用户，是否继续？',
+        '注销该用户信息？',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          deleteOneUser(row)
+            .then(() => {
+              row.status = -1;
+              ElMessage.success('注销该用户成功');
+            })
+            .catch(() => {
+              ElMessage.error('注销该用户失败');
+            });
+        })
+        .catch(() => {
+          ElMessage({
+            type: 'info',
+            message: '取消删除',
+          });
+        });
+    };
+
+    const relive = (row: UserInfoListInt) => {
+      // 启用用户
+      reliveOneUser(row).then(
+        (res) => {
+          if (res.data.code == 200) {
+            row.status = 0
+            ElMessage.success('启用成功');
+          }
+          else {
+            ElMessage.error('启用失败');
+          }
+          // console.log(res);
+
+        }
+      ).catch(
+        (err) => {
+          ElMessage.error('启用失败');
+          // console.log(err);
+        }
+
+
+      )
+    }
+
+
+
+    const rules = {
+      role: [{ required: true, message: '请选择身份' }],
+      nickName: [{ required: true, message: '请输入用户名' }],
+      password: [{ required: true, message: '请输入密码' }],
+    };
+
+    const dialogConfirm = (formRef: FormInstance) => {
+      formRef.validate((valid) => {
+        if (valid) {
+          data.isLoading = true;
+          if (data.status === 0) {
+            // console.log('add');
+            addOneUser(data.activeData)
+              .then((res) => {
+                if (res.data.code == 200) {
+                  ElMessage.success('添加用户成功');
+                  data.isLoading = false;
+                  data.isShow = false;
+                  data.currentPage = 1;
+                  data.queryData.nickName = null;
+                  updateList();
+                }
+                else {
+                  ElMessage.error(res.data.msg)
+                }
+              })
+              .catch(() => {
+                ElMessage.error('添加用户失败');
+                data.isLoading = false;
+              });
+          } else if (data.status === 1) {
+            // console.log('edit');
+            editOneUser(data.activeData)
+              .then((res) => {
+                if (res.data.code == 200) {
+                  ElMessage.success('编辑用户成功');
+                  for (let key in data.activeData)
+                    data.activeDataPointer[key] = data.activeData[key];
+                  data.isLoading = false;
+                  data.isShow = false;
+                  //  updateList();
+                }
+                else {
+                  ElMessage.error(res.data.msg);
+                }
+
+              })
+              .catch(() => {
+                ElMessage.error('编辑失败');
+                data.isLoading = false;
+              });
+          }
+        } else {
+          ElMessage.error('内容有错误！');
+        }
+      });
+      data.isShow = false;
+    };
+
+    return {
+      ...toRefs(data),
+      Search,
+      Edit,
+      searchUser,
+      onMounted,
+      currentChange,
+      addUser,
+      editUser,
+      deleteUser,
+      rules,
+      dialogConfirm,
+      relive,
+    };
+  },
+});
+</script>
+
+<style scoped>
+</style>

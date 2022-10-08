@@ -1,0 +1,181 @@
+<!--  -->
+<template>
+  <div class="login-box">
+    <el-form ref="loginFormRef" :model="loginForm" status-icon :rules="rules" label-width="70px" class="loginForm">
+      <h2 class="login-title">欢迎登录高校招生系统</h2>
+
+      <el-form-item class="ur" label="账号：" prop="nickName">
+        <el-input v-model="loginForm.nickName" autocomplete="off" />
+      </el-form-item>
+
+      <el-form-item class="psw" label="密码：" prop="password">
+        <el-input v-model="loginForm.password" type="password" autocomplete="off" />
+      </el-form-item>
+
+      <el-form-item class="link">
+        <el-button class="btn-login" type="primary" @click="submitForm(loginFormRef)">登录</el-button>
+
+        <div class="toLogin">
+          <el-link @click="goRetrievePassword" type="primary">忘记密码?</el-link>
+        </div>
+
+
+        <div class="toRegister">
+          <span>没有账号? <el-link @click="goRegister" type="primary">点此注册</el-link></span>
+        </div>
+
+
+
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, reactive, toRefs } from 'vue'
+import { InitData } from '../types/login'
+import { FormInstance, ElMessage } from 'element-plus';
+import { login } from '../http/api';
+import view from '../util/view'
+import { useRouter } from 'vue-router'
+
+export default defineComponent({
+  setup() {
+    const mixins=[view]
+    const data = reactive(new InitData());
+    const router = useRouter()
+    const rules = {
+      nickName: [
+        { required: true, message: '请输入账号', trigger: 'blur' },
+        { min: 1, message: '账号不能为空', trigger: 'blur' },
+      ],
+      password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, max: 18, message: '密码长度需要介于6-18', trigger: 'blur' },
+      ]
+    }
+    const submitForm = (loginFormRef: FormInstance | undefined) => {
+      if (!loginFormRef) return
+
+      loginFormRef.validate((valid: boolean) => {
+        if (valid) {
+          login(data.loginForm).then(
+            (res) => {
+              // console.log(res);
+              if (res.data.code == 200) {
+                // console.log(res.data);
+
+                localStorage.setItem('user', JSON.stringify(res.data.user))
+                ElMessage.success({
+                  message: '登入成功!欢迎您!',
+                  type: 'success'
+                });
+                router.push('/')
+              } else {
+                ElMessage.warning({
+                  message: "账户名或密码错误",
+                  type: "warning",
+                });
+                return false;
+              }
+            }
+          ).catch(
+            (err) => {
+              // console.log(err);
+              ElMessage.error(err.message)
+            }
+
+          )
+        } else {
+          ElMessage.warning({
+            message: "请输入账号或密码",
+            type: "warning",
+          });
+          return false;
+        }
+      })
+    }
+
+    const goRetrievePassword = () => {
+      router.push('/RetrievePassword')
+    }
+
+    const goRegister = () => {
+      router.push("/register")
+    }
+
+    return {
+      ...toRefs(data),
+      rules,
+      submitForm,
+      goRetrievePassword,
+      goRegister,
+      mixins
+    };
+  }
+})
+</script>
+
+<style  lang="scss" scoped>
+.login-box {
+  background-image: url("../assets/images/signback1.jpeg");
+  background-size: 100% 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /*关键*/
+  background-position: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  zoom: 1;
+  box-sizing: border-box;
+  padding-top: 200px;
+
+  .ur {
+    margin-bottom: 40px;
+  }
+
+  .loginForm {
+    width: 400px;
+    padding: 20px;
+    background: white;
+    border-radius: 20px;
+    margin: 0 auto;
+  }
+
+  .login-title {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+  }
+
+  .link {
+    margin-top: 40px;
+    margin-bottom: 40px;
+
+    .btn-login {
+      width: 80%;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .toLogin {
+      margin-left: 25px;
+      margin-right: 40px;
+    }
+
+    .toRegister {
+      margin-left: 30px;
+    }
+
+    .btn-2 {
+      position: inherit;
+      margin-left: 100px;
+      margin-right: 30px;
+    }
+  }
+}
+</style>

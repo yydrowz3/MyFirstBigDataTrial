@@ -1,0 +1,21 @@
+package com.gcsj.vo;
+
+import lombok.Data;
+
+@Data
+public class EnrInfo{
+
+    int pageNum;//所在在页
+    int pageSize;//分页大小
+    String desc;//判断升降序
+    int id;
+    String schoolCode;
+    String schoolName;
+    String province;
+    String majorCode;
+    String profess;
+    String subject;
+    int batch;
+    int plan;
+
+}

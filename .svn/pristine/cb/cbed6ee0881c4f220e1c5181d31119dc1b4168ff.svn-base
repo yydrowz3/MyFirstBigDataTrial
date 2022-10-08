@@ -1,0 +1,93 @@
+package com.gcsj.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.gcsj.service.EnrInfoService;
+import com.gcsj.vo.EnrInfoResult;
+import com.gcsj.pojo.EnrollmentInfo;
+import com.gcsj.service.EnrollmentInfoService;
+import com.gcsj.vo.EnrInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@ResponseBody
+@Controller
+public class  SelectController {
+
+    @Autowired
+    EnrollmentInfoService enrollmentInfoService;
+
+    @Autowired
+    EnrInfoService enrInfoService;
+
+    @RequestMapping("/myquery")
+    public Object toEnrollMentInfoQuery(EnrollmentInfo enrollmentInfo) {
+
+        EnrInfoResult enrInfoResult = null;
+        EnrInfo enrInfo = new EnrInfo();
+        enrInfo.setPageSize(10);
+        enrInfo.setPageNum(1);
+        System.out.println("queryCondition=" + enrollmentInfo);
+        if ((enrollmentInfo.getProfess() == null || enrollmentInfo.getProfess().equals(""))
+                && (enrollmentInfo.getProvince() == null || enrollmentInfo.getProvince().equals(""))
+                && (enrollmentInfo.getSchoolName() == null || enrollmentInfo.getSchoolName().equals(""))) {
+                enrInfo.setSchoolName(null);
+                enrInfo.setProvince(null);
+                enrInfo.setProfess(null);
+                enrInfoResult = enrInfoService.mulSelect(enrInfo);
+            } else {
+                enrInfo.setSchoolName(enrollmentInfo.getSchoolName());
+                enrInfo.setProvince(enrollmentInfo.getProvince());
+                enrInfo.setProfess(enrollmentInfo.getProfess());
+                enrInfoResult = enrInfoService.mulSelect1(enrInfo);
+            }
+        return JSON.toJSONString(enrInfoResult);
+
+    }
+
+    @RequestMapping("/topnmax-index")
+    public String hotTopNQuery(String schoolName,String province){
+        System.out.println("to hot top n query>>>>>");
+        System.out.println("schoolName="  +schoolName);
+        System.out.println("province="+province);
+        EnrInfo enrInfo = new EnrInfo();
+        enrInfo.setPageSize(10);
+        enrInfo.setPageNum(1);
+        if(schoolName != null && schoolName.trim().equals("")){
+            schoolName = null;
+        }
+        if(province != null && province.trim().equals("")){
+            province = null;
+        }
+        enrInfo.setSchoolName(schoolName);
+        enrInfo.setProfess(province);
+        enrInfo.setDesc("desc");
+        EnrInfoResult enrInfoResult = enrInfoService.getMajorStatis(enrInfo);
+        return JSON.toJSONString(enrInfoResult);
+    }
+
+    @RequestMapping("/topnmin-index")
+    public String topnCoolNQuery(String schoolName,String province,Model model){
+        System.out.println("to cool top n query>>>>>");
+        System.out.println("schoolName=" +schoolName);
+        System.out.println("province="+province);
+        EnrInfo enrInfo = new EnrInfo();
+        enrInfo.setPageSize(10);
+        enrInfo.setPageNum(1);
+        if(schoolName != null && schoolName.trim().equals("")){
+            schoolName = null;
+        }
+        if(province != null && province.trim().equals("")){
+            province = null;
+        }
+        enrInfo.setSchoolName(schoolName);
+        enrInfo.setProfess(province);
+        enrInfo.setDesc("desc");
+        EnrInfoResult enrInfoResult = enrInfoService.getMajorStatis(enrInfo);
+        return JSON.toJSONString(enrInfoResult);
+    }
+}
+

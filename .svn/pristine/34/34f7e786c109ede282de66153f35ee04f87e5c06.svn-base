@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gcsj.mapper.EnrollmentInfoMapper">
+    <resultMap id="EnrollmentInfoRM" type="com.gcsj.pojo.EnrollmentInfo">
+        <id property="id" column="id"></id>
+        <result property="schoolCode" column="school_code"></result>
+        <result property="schoolName" column="school_name"></result>
+        <result property="province" column="province"></result>
+        <result property="majorCode" column="major_code"></result>
+        <result property="profess" column="profess"></result>
+        <result property="subject" column="subject"></result>
+        <result property="batch" column="batch"></result>
+        <result property="plan" column="plan"></result>
+    </resultMap>
+
+    <update id="upDataById" parameterType="com.gcsj.pojo.EnrollmentInfo">
+        update enrollment_info
+        set school_code = #{schoolCode},school_name = #{schoolName},province = #{province},major_code = #{majorCode},
+            profess = #{profess},
+            subject = #{subject},
+            batch = #{batch},
+            plan = #{plan}
+        where id = #{id}
+    </update>
+
+    <select id="findById" resultMap="EnrollmentInfoRM">
+        select *
+        from enrollment_info
+        where id = #{id}
+    </select>
+</mapper>

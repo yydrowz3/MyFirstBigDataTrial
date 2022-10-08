@@ -1,0 +1,52 @@
+package com.gcsj.service.impl;
+
+import com.gcsj.mapper.EnrInfoMapper;
+import com.gcsj.service.EnrInfoService;
+import com.gcsj.vo.EnrInfo;
+import com.gcsj.vo.EnrInfoResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class EnrInfoServiceImpl implements EnrInfoService{
+
+    @Autowired
+    EnrInfoMapper enrInfoMapper;
+
+    @Override
+    public EnrInfoResult mulSelect(EnrInfo enrInfo){
+        EnrInfoResult enrInfoResult = new EnrInfoResult();
+        List<Map<String, Object>> maps = enrInfoMapper.mulSelect(enrInfo);
+        enrInfoResult.setData(maps);
+        Integer integer = enrInfoMapper.countMulSelect(enrInfo);
+        enrInfoResult.setTotal(integer);
+        enrInfoResult.setPageSize(enrInfo.getPageSize());
+        return enrInfoResult;
+    }
+
+    @Override
+    public EnrInfoResult mulSelect1(EnrInfo enrInfo){
+        EnrInfoResult enrInfoResult = new EnrInfoResult();
+        List<Map<String, Object>> maps = enrInfoMapper.mulSelect1(enrInfo);
+        enrInfoResult.setData(maps);
+        Integer integer = enrInfoMapper.countMulSelect1(enrInfo);
+        enrInfoResult.setTotal(integer);
+        enrInfoResult.setPageSize(enrInfo.getPageSize());
+        return enrInfoResult;
+    }
+
+
+    @Override
+    public EnrInfoResult getMajorStatis(EnrInfo enrInfo){
+        EnrInfoResult enrInfoResult = new EnrInfoResult();
+        List<Map<String, Object>> maps = enrInfoMapper.mulSelect2(enrInfo);
+        enrInfoResult.setData(maps);
+        Integer integer = enrInfoMapper.countMulSelect2(enrInfo);
+        enrInfoResult.setTotal(integer);
+        enrInfoResult.setPageSize(enrInfo.getPageSize());
+        return enrInfoResult;
+    }
+}

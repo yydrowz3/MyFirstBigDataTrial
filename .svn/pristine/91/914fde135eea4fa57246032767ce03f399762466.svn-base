@@ -1,0 +1,169 @@
+<!--  -->
+<template>
+  <div class="common-layout">
+    <el-container>
+      <el-aside class="left">欢迎注册高校招生系统</el-aside>
+      <el-main class="right">
+        <div class="register-box">
+          <el-form
+            ref="registerFormRef"
+            :model="registerForm"
+            status-icon
+            :rules="rules"
+            label-width="70px"
+            class="registerForm"
+          >
+            <h2 class="register-title">注册</h2>
+            <el-form-item class="ur" label="账号：" prop="nickName">
+              <el-input v-model="registerForm.nickName" autocomplete="off" />
+            </el-form-item>
+            <el-form-item class="psw" label="密码：" prop="password">
+              <el-input
+                v-model="registerForm.password"
+                type="password"
+                autocomplete="off"
+              />
+            </el-form-item>
+            <el-form-item class="btn">
+              <el-button
+                class="btn-1"
+                type="primary"
+                @click="submitForm(registerFormRef)"
+                >注册</el-button
+              >
+              <div class="toLogin">
+                已有账号?
+                <el-link @click="goLogin" type="primary">点此登录</el-link>
+              </div>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-main>
+    </el-container>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, reactive, toRefs } from 'vue';
+import { InitData } from '../types/register';
+import { FormInstance, ElMessage } from 'element-plus';
+import { register } from '../http/api';
+import { useRouter } from 'vue-router';
+
+export default defineComponent({
+  setup() {
+    const data = reactive(new InitData());
+    const router = useRouter();
+    const rules = {
+      nickName: [
+        { required: true, message: '请输入账号', trigger: 'blur' },
+        { min: 4, max: 15, message: '账号长度需要介于4-15', trigger: 'blur' },
+      ],
+      password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, max: 18, message: '密码长度需要介于6-18', trigger: 'blur' },
+      ],
+    };
+    const submitForm = (registerFormRef: FormInstance | undefined) => {
+      if (!registerFormRef) return;
+
+      registerFormRef.validate((valid: boolean) => {
+        if (valid) {
+          register(data.registerForm)
+            .then((res) => {
+              // console.log(res);
+              if (res.data.code == 200) {
+                ElMessage.success({
+                  message: '注册成功!正在返回登录页面!',
+                  type: 'success',
+                });
+                router.push('/login');
+              } else {
+                ElMessage.warning({
+                  message: res.data.msg,
+                  type: 'warning',
+                });
+                return false;
+              }
+            })
+            .catch((err) => {
+              // console.log(err);
+              ElMessage.warning({
+                message: err,
+                type: 'warning',
+              });
+            });
+        }
+      });
+    };
+    const goLogin = () => {
+      router.push('/login');
+    };
+
+    return {
+      ...toRefs(data),
+      rules,
+      submitForm,
+      goLogin,
+    };
+  },
+});
+</script>
+
+<style lang="scss" scoped>
+.common-layout {
+  width: 80%;
+  height: 60%;
+  margin: auto;
+  margin-top: 10%;
+  background-color: RGB(245, 240, 240);
+  border: 1px solid grey;
+  box-shadow: gray 10px 10px 30px 5px;
+  border-radius: 20px;
+
+  .left {
+    width: 40%;
+    background: RGB(73, 88, 109);
+    text-align: center;
+    font-size: 30px;
+    line-height: 500px;
+  }
+
+  .right {
+    width: 60%;
+    background: #fff;
+
+    .register-box {
+      .registerForm {
+        width: 400px;
+        padding: 20px;
+        background: white;
+        border-radius: 20px;
+        margin: 0 auto;
+      }
+
+      .register-title {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 40px;
+      }
+
+      .btn {
+        margin-top: 40px;
+        margin-bottom: 40px;
+
+        .btn-1 {
+          width: 100%;
+          margin-left: 20px;
+          margin-right: 20px;
+        }
+
+        .toLogin {
+          position: inherit;
+          margin-left: 90px;
+        }
+      }
+    }
+  }
+}
+</style>
