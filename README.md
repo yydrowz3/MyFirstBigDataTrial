@@ -26,22 +26,22 @@
 
 ### Admin
 
-![](/Users/yze/Library/Application%20Support/marktext/images/115a52060248269d9d4888b6ae7ffc343199e05b.png)
+![](pic/screenshot13.png)
 
-![](/Users/yze/Library/Application%20Support/marktext/images/61e1705d510c03ec17fb770835bab4092289c13d.png)
+![](pic/screenshot8.png)
 
-![](/Users/yze/Library/Application%20Support/marktext/images/6cf7767b8740f6a672719d90b8ee931b77cc2f25.png)
+![](pic/screenshot12.png)
 
 ### Java + SpringBoot
 
-![](/Users/yze/Library/Application%20Support/marktext/images/2dae734ef2924bf3811fc7fe7b4043289baa5f9a.png)
+![](pic/screenshot3.png)
 
-![](/Users/yze/Library/Application%20Support/marktext/images/6be32f8626eb1fd7ccefe031ba1f3049b3861fc3.png)
+![](pic/screenshot2.png)
 
 ## Hadoop
 
 Map + Reduce
 
-![](/Users/yze/Library/Application%20Support/marktext/images/5aafdeae272fbe62e1ed77578dd8cae44faa4036.png)
+![](pic/screenshot6.png)
 
-![](/Users/yze/Library/Application%20Support/marktext/images/aa6e5796afb8820431eaf330e19d77d22be069dd.png)
+![](pic/screenshot5.png)
