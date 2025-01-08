@@ -1,5 +1,0 @@
-export interface CityArray {
-    city: string
-    province: string
-    Quantity: string
-}

@@ -1,22 +1,23 @@
-高校招生计划大数据分析可视化系统
 
-技术栈：
+A simple *Hadoop* based distributed big data visulization analysis web system.
 
-- 前端：Vue.js + ECharts
+*using students university enrollment data of China*
 
-- 后端：SpringBoot + Hadoop + Mysql
 
+Tech Stack：
+
+- Front-end：Vue.js + ECharts
+- Back-end：SpringBoot + Hadoop + Mysql
 
 
 ## Front-end
 
-用户角色：
+Users
 
-- 普通用户
+- normal user
+- system administrator
 
-- 系统管理员
-
-分别对应不同的操作与UI界面。
+responding to different UI and available operations
 
 ### User
 

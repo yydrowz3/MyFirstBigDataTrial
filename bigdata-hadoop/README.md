@@ -1,9 +1,9 @@
-### 运行
+### Executing
 
-1更改XXXDriver.class里的path.
+1. change the `path` in `XXXDriver.class`
 
 ```
-        //6.设置输入和输出路径
+        // Set the input and output path
         FileInputFormat.setInputPaths(job, new Path("G:\\data\\input"));
         FileOutputFormat.setOutputPath(job, new Path("G:\\data\\output"));
         //FileInputFormat.setInputPaths(job, new Path(args[0]));
@@ -11,5 +11,5 @@
 
 ```
 
-2.点击main运行
+2. execute from `main`
 
